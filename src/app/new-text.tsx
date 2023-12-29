@@ -1,12 +1,25 @@
 "use client";
 import React, {useEffect, useRef} from "react";
+import { Inter } from 'next/font/google'
+import {Roboto} from "next/font/google";
+import {Poppins} from "next/font/google";
+
+const inter = Inter({ subsets: ['latin'] })
+const roboto = Roboto({ weight: "100", subsets: ['latin']})
+const poppins = Poppins({ weight: "100", subsets: ['latin']})
 
 export default function NewText({
     containerRef,
-    text
+    text,
+    fontSize,
+    fontFamily,
+    color
                                 }:{
     containerRef: React.RefObject<HTMLDivElement>;
     text: string;
+    fontSize: number;
+    fontFamily: string;
+    color: string;
 }){
 
     const boxRef = useRef<HTMLDivElement>(null);
@@ -67,11 +80,32 @@ export default function NewText({
         }
 
         return cleanup;
-    }, [])
+    }, [containerRef])
 
     return (
-        <div ref={boxRef} className="absolute top-4 left-4 border px-4 py-2 w-fit rounded-xl cursor-pointer">
-            {text}
+        <div
+            style={
+                {
+                    fontSize: `${fontSize}px`,
+                    color: color
+                }
+            }
+            ref={boxRef} className={`absolute top-4 left-4 border px-4 py-2 w-fit rounded-xl cursor-pointer`}>
+            {
+                fontFamily === "Inter" ? (
+                    <span className={inter.className}>
+                        {text}
+                    </span>
+                ) : fontFamily === "Roboto" ? (
+                    <span className={roboto.className}>
+                        {text}
+                    </span>
+                ) : fontFamily === "Poppins" ? (
+                    <span className={poppins.className}>
+                        {text}
+                    </span>
+                ) : null
+            }
         </div>
     )
 }

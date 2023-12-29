@@ -4,18 +4,20 @@ import NewText from "@/app/new-text";
 
 export default function Home() {
     const containerRef = useRef<HTMLDivElement>(null);
+    const [selectedFontSize, setSelectedFontSize] = useState<number>(8);
+    const [selectedFontFamily, setSelectedFontFamily] = useState<string>("Inter");
     const [texts, setTexts] = useState<string[]>([]);
     const [currentText, setCurrentText] = useState<string>("");
     const [removedTexts, setRemovedTexts] = useState<string[]>([]);
+    const [color, setColor] = useState<string>("white");
     const handleAddText = (text: string) => {
         setTexts([...texts, text]);
     }
 
     return (
         <main className={`grid grid-cols-1 md:grid-cols-3 place-items-center h-screen w-screen`}>
-            <div className={`flex flex-col h-full w-full mt-16`}>
-                <div className={`p-4 w-fit flex`}>
-                    <button className={`btn btn-outline mr-4 w-full`} onClick={
+            <div className={`flex flex-col items-start space-y-4 p-4 h-full w-full mt-16`}>
+                    <button className={`btn btn-outline w-full max-w-[256px]`} onClick={
                         () =>{
                             // remove last text
                             const newTexts = [...texts];
@@ -23,10 +25,12 @@ export default function Home() {
                             if (removedText) setRemovedTexts([...removedTexts, removedText]);
                             setTexts(newTexts);
                         }
-                    }>
+                    }
+                    disabled={texts.length === 0}
+                    >
                         Undo
                     </button>
-                    <button className={`btn btn-outline w-full`} onClick={
+                    <button className={`btn btn-outline w-full max-w-[256px]`} onClick={
                         () =>{
                             // remove last text
                             const newTexts = [...texts];
@@ -34,16 +38,22 @@ export default function Home() {
                             if (removedText) setTexts([...newTexts, removedText]);
                             setRemovedTexts(newTexts);
                         }
-                    }>
+                    }
+                    disabled={removedTexts.length === 0}
+                    >
                         Redo
                     </button>
-                </div>
             </div>
             <div ref={containerRef}
                  className="relative border border-gray-400 rounded-xl h-[800px] w-full overflow-hidden">
                 {
                     texts.map((text, i) => (
-                        <NewText key={i} containerRef={containerRef} text={text}/>
+                        <NewText key={i} containerRef={containerRef} text={text} fontSize={
+                            selectedFontSize
+                        }
+                        fontFamily={selectedFontFamily}
+                        color={color}
+                        />
                     ))
                 }
             </div>
@@ -55,7 +65,13 @@ export default function Home() {
                     Font
                 </h3>
 
-                <select className={`select select-bordered w-full`}>
+                <select className={`select select-bordered w-full`}
+                onChange={
+                    (e) => {
+                        setSelectedFontFamily(e.target.value);
+                    }
+                }
+                >
                     <option value="Inter">Inter</option>
                     <option value="Roboto">Roboto</option>
                     <option value="Poppins">Poppins</option>
@@ -71,10 +87,17 @@ export default function Home() {
                             Size
                         </h3>
 
-                        <select className={`select select-bordered w-full`}>
-                            <option value="Inter">12</option>
-                            <option value="Roboto">14</option>
-                            <option value="Poppins">16</option>
+                        <select className={`select select-bordered w-full`} onChange={
+                            (e) => {
+                                setSelectedFontSize(parseInt(e.target.value));
+                            }
+                        }>
+                            <option value="8">8</option>
+                            <option value="10">10</option>
+                            <option value="12">12</option>
+                            <option value="14">14</option>
+                            <option value="16">16</option>
+                            <option value="20">20</option>
                         </select>
                     </div>
                     <div className={`w-full`}>
@@ -84,10 +107,14 @@ export default function Home() {
                             Color
                         </h3>
 
-                        <select className={`select select-bordered w-full`}>
-                            <option value="Inter">Black</option>
-                            <option value="Roboto">White</option>
-                            <option value="Poppins">Red</option>
+                        <select className={`select select-bordered w-full`} onChange={
+                            (e) => {
+                                setColor(e.target.value);
+                            }
+                        }>
+                            <option value="white">White</option>
+                            <option value="black">Black</option>
+                            <option value="red">Red</option>
                         </select>
                     </div>
                 </div>
